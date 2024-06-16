@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Warframe_market_API
@@ -12,12 +13,13 @@ namespace Warframe_market_API
         {
             BaseAddress = new Uri("https://api.warframe.market/v1/"),
         };
-
-        public async Task<string> GetOrdersAsync(string s)
+        public async Task<JsonDocument> GetOrdersAsync(string s)
         {
             HttpRequestMessage m = new HttpRequestMessage(HttpMethod.Get, $"items/{s}/orders");
-            string n = await sharedClient.SendAsync(m).Result.Content.ReadAsStringAsync();
-            return n;
+            HttpResponseMessage n = await sharedClient.SendAsync(m);
+            Stream rm = await n.Content.ReadAsStreamAsync();
+            var str = await WarframeMarketAPI.GetStream(rm);
+            return str;
         }
 
         public async Task<string> GetAllItemsAsync()
@@ -32,6 +34,12 @@ namespace Warframe_market_API
             HttpRequestMessage m = new HttpRequestMessage(HttpMethod.Get, $"items/{s}");
             string n = await sharedClient.SendAsync(m).Result.Content.ReadAsStringAsync();
             return n;
+        }
+
+        public static async Task<JsonDocument> GetStream(Stream json)
+        {
+            var v = await JsonDocument.ParseAsync(json);
+            return v;
         }
     }
 }
