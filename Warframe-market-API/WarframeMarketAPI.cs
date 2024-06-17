@@ -9,42 +9,31 @@ namespace Warframe_market_API
 {
     internal class WarframeMarketAPI
     {
-        public static HttpClient sharedClient = new()
+        public  HttpClient sharedClient = new()
         {
             BaseAddress = new Uri("https://api.warframe.market/v1/"),
         };
         public async Task<OrdersResponse> GetOrdersAsync(string s)
         {
-            HttpRequestMessage m = new HttpRequestMessage(HttpMethod.Get, $"items/{s}/orders");
-            HttpResponseMessage n = await sharedClient.SendAsync(m);
-            Stream rm = await n.Content.ReadAsStreamAsync();
-            //JsonDocument str = await WarframeMarketAPI.GetStream(rm);
-            OrdersResponse? r = await JsonSerializer.DeserializeAsync<OrdersResponse>(rm);
-            return r;
+            return await ExecuteRequest<OrdersResponse>($"items/{s}/orders");
         }
 
         public async Task<AllItemsResponse> GetAllItemsAsync()
         {
-            HttpRequestMessage m = new HttpRequestMessage(HttpMethod.Get, "items" );
-            HttpResponseMessage n = await sharedClient.SendAsync(m);
-            Stream rm = await n.Content.ReadAsStreamAsync();
-            AllItemsResponse? r = await JsonSerializer.DeserializeAsync<AllItemsResponse>(rm);
-            return r;
+            return await ExecuteRequest<AllItemsResponse>("items");
         }
 
         public async Task<ItemResponse> GetItemAsync(string s)
         {
-            HttpRequestMessage m = new HttpRequestMessage(HttpMethod.Get, $"items/{s}");
-            HttpResponseMessage n = await sharedClient.SendAsync(m);
-            Stream rm = await n.Content.ReadAsStreamAsync();
-            ItemResponse? r = await JsonSerializer.DeserializeAsync<ItemResponse>(rm);
-            return r;
+            return await ExecuteRequest<ItemResponse>($"items/{s}");
         }
 
-        public static async Task<JsonDocument> GetStream(Stream json)
+        public async Task<T> ExecuteRequest<T>(string s)
         {
-            var v = await JsonDocument.ParseAsync(json);
-            return v;
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, s);
+            HttpResponseMessage responseMessage = await sharedClient.SendAsync(requestMessage);
+            Stream stream = await responseMessage.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<T>(stream);
         }
     }
 }
