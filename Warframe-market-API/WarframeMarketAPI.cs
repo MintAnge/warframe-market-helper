@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MintAnge.WarframeMarketApi.Models;
  
-namespace Warframe_market_API
+namespace MintAnge.WarframeMarketApi
 {
     internal class WarframeMarketAPI
     {
@@ -33,7 +34,9 @@ namespace Warframe_market_API
             HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, s);
             HttpResponseMessage responseMessage = await sharedClient.SendAsync(requestMessage);
             Stream stream = await responseMessage.Content.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<T>(stream);
+            JsonSerializerOptions? snake = new JsonSerializerOptions();
+            snake.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+            return await JsonSerializer.DeserializeAsync<T>(stream, snake);
         }
     }
 }
