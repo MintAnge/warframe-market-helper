@@ -3,6 +3,8 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using Telegram.Bot;
 
+namespace MintAnge.WarframeMarketHelper
+{
 internal class UpdErrHandlers
 {
         public static async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
@@ -55,4 +57,6 @@ internal class UpdErrHandlers
             Console.WriteLine(ErrorMessage);
             return Task.CompletedTask;
         }
+}
+
 }

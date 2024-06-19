@@ -4,42 +4,39 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-
-namespace Warframe_market_API
+using MintAnge.WarframeMarketApi.Models;
+ 
+namespace MintAnge.WarframeMarketApi
 {
     internal class WarframeMarketAPI
     {
-        public static HttpClient sharedClient = new()
+        public  HttpClient sharedClient = new()
         {
             BaseAddress = new Uri("https://api.warframe.market/v1/"),
         };
-        public async Task<JsonDocument> GetOrdersAsync(string s)
+        public async Task<OrdersResponse> GetOrdersAsync(string s)
         {
-            HttpRequestMessage m = new HttpRequestMessage(HttpMethod.Get, $"items/{s}/orders");
-            HttpResponseMessage n = await sharedClient.SendAsync(m);
-            Stream rm = await n.Content.ReadAsStreamAsync();
-            var str = await WarframeMarketAPI.GetStream(rm);
-            return str;
+            return await ExecuteRequest<OrdersResponse>($"items/{s}/orders");
         }
 
-        public async Task<string> GetAllItemsAsync()
+        public async Task<AllItemsResponse> GetAllItemsAsync()
         {
-            HttpRequestMessage m = new HttpRequestMessage(HttpMethod.Get, "items" );
-            string n = await sharedClient.SendAsync(m).Result.Content.ReadAsStringAsync();
-            return n;
+            return await ExecuteRequest<AllItemsResponse>("items");
         }
 
-        public async Task<string> GetItemAsync(string s)
+        public async Task<ItemResponse> GetItemAsync(string s)
         {
-            HttpRequestMessage m = new HttpRequestMessage(HttpMethod.Get, $"items/{s}");
-            string n = await sharedClient.SendAsync(m).Result.Content.ReadAsStringAsync();
-            return n;
+            return await ExecuteRequest<ItemResponse>($"items/{s}");
         }
 
-        public static async Task<JsonDocument> GetStream(Stream json)
+        public async Task<T> ExecuteRequest<T>(string s)
         {
-            var v = await JsonDocument.ParseAsync(json);
-            return v;
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, s);
+            HttpResponseMessage responseMessage = await sharedClient.SendAsync(requestMessage);
+            Stream stream = await responseMessage.Content.ReadAsStreamAsync();
+            JsonSerializerOptions? snake = new JsonSerializerOptions();
+            snake.PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower;
+            return await JsonSerializer.DeserializeAsync<T>(stream, snake);
         }
     }
 }
