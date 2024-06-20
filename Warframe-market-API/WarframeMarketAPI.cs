@@ -8,7 +8,7 @@ using MintAnge.WarframeMarketApi.Models;
  
 namespace MintAnge.WarframeMarketApi
 {
-    internal class WarframeMarketAPI
+    public class WarframeMarketAPI
     {
         public  HttpClient sharedClient = new()
         {
