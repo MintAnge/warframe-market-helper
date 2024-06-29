@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Warframe-Helper": {
+      "commandName": "Project",
+      "commandLineArgs": "--environment Development"
+    },
+    "Профиль 1": {
+      "commandName": "Project",
+      "commandLineArgs": "--environment Development"
+    }
+  }
+}
