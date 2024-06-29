@@ -2,61 +2,98 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using Telegram.Bot;
+using MintAnge.WarframeMarketApi;
+using MintAnge.WarframeMarketApi.Models;
+using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace MintAnge.WarframeMarketHelper
 {
-internal class UpdErrHandlers
-{
-        public static async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+    public class UpdErrHandlers
+    {
+        private readonly WarframeMarketAPI wmAPI;
+        private readonly ILogger<UpdErrHandlers> logger;
+
+        public UpdErrHandlers(WarframeMarketAPI wmAPI, ILogger<UpdErrHandlers> logger)
         {
-		// ќб€зательно ставим блок try-catch, чтобы наш бот не "падал" в случае каких-либо ошибок
-		try
-		{
-			// —разу же ставим конструкцию switch, чтобы обрабатывать приход€щие Update
-			switch (update.Type)
-			{
-				case UpdateType.Message:
-					{
-						// эта переменна€ будет содержать в себе все св€занное с сообщени€ми
-						var message = update.Message;
+            this.wmAPI = wmAPI;
+            this.logger = logger;
+        }
 
-						// From - это от кого пришло сообщение (или любой другой Update)
-						var user = message.From;
-
-						// ¬ыводим на экран то, что пишут нашему боту, а также небольшую информацию об отправителе
-						Console.WriteLine($"{user.FirstName} ({user.Id}) написал сообщение: {message.Text}");
-
-						// Chat - содержит всю информацию о чате
-						var chat = message.Chat;
-						await botClient.SendTextMessageAsync(
-							chat.Id,
-							message.Text, // отправл€ем то, что написал пользователь
-							replyToMessageId: message.MessageId // по желанию можем поставить этот параметр, отвечающий за "ответ" на сообщение
-							);
-
-						return;
-					}
-			}
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine(ex.ToString());
-		}
-	}
-
-        public static Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
+        public async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            // “ут создадим переменную, в которую поместим код ошибки и еЄ сообщение 
-            var ErrorMessage = error switch
+            try
             {
-                ApiRequestException apiRequestException
-                    => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
-                _ => error.ToString()
-            };
+                switch (update.Type)
+                {
+                    case UpdateType.Message:
+                        {
+                            var message = update.Message;
+                            var user = message.From;
 
-            Console.WriteLine(ErrorMessage);
+                            logger.LogInformation("{user name} ({user id}) написал сообщение: {message}", user.FirstName, user.Id, message.Text);
+
+                            var chat = message.Chat;
+
+                            switch (message.Type)
+                            {
+                                case MessageType.Text:
+                                    {
+                                        string[] str = message.Text.Split(' ');
+                                        if (str[0] == "/summary")
+                                        {
+                                            string s = str[1];
+                                            Order[] allOrders = (await this.wmAPI.GetOrdersAsync(s)).payload.orders;
+
+                                            var result = allOrders                                                        
+                                                        .Where(order => order.OrderType == "sell" && order.User.Status == "ingame")
+                                                        .OrderBy(order => order.Platinum)
+                                                        .Take(5)
+                                                        .Select(obj => obj.Platinum)
+                                                        .ToList();
+
+                                            await botClient.SendTextMessageAsync(
+                                                chat.Id,
+                                                JsonSerializer.Serialize((result)));
+
+                                            return;
+                                        }
+
+                                        return;
+                                    }
+                            }
+
+
+                            await botClient.SendTextMessageAsync(
+                                chat.Id,
+                                message.Text,
+                                replyToMessageId: message.MessageId
+                                );
+
+                            return;
+                        }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Message processing failed" );
+            }
+        }
+
+        public Task ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken)
+        {
+            if (error is ApiRequestException)
+            {
+                var apiRequestException = error as ApiRequestException;
+                logger.LogError("Telegram API Error:\n[{ErrorCode}]\n{Message}", apiRequestException.ErrorCode, apiRequestException.Message);
+            }
+            else
+            {
+                logger.LogError(error, "Polling failed");
+            }
+
             return Task.CompletedTask;
         }
-}
+    }
 
 }
