@@ -6,6 +6,11 @@ using MintAnge.WarframeMarketApi;
 using MintAnge.WarframeMarketApi.Models;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Warframe_Helper;
+using Microsoft.EntityFrameworkCore;
+using Warframe_Helper.Data;
+using Warframe_Helper.Data.Models;
 
 namespace MintAnge.WarframeMarketHelper
 {
@@ -13,11 +18,13 @@ namespace MintAnge.WarframeMarketHelper
     {
         private readonly WarframeMarketAPI wmAPI;
         private readonly ILogger<UpdErrHandlers> logger;
+        private readonly IServiceScopeFactory serviceScopeFactory;
 
-        public UpdErrHandlers(WarframeMarketAPI wmAPI, ILogger<UpdErrHandlers> logger)
+        public UpdErrHandlers(WarframeMarketAPI wmAPI, ILogger<UpdErrHandlers> logger, IServiceScopeFactory serviceScopeFactory)
         {
             this.wmAPI = wmAPI;
             this.logger = logger;
+            this.serviceScopeFactory = serviceScopeFactory;
         }
 
         public async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
@@ -38,29 +45,53 @@ namespace MintAnge.WarframeMarketHelper
                             switch (message.Type)
                             {
                                 case MessageType.Text:
+                                {
+
+
+                                    string[] str = message.Text.Split(' ');
+                                    if (str[0] == "/summary")
                                     {
-                                        string[] str = message.Text.Split(' ');
-                                        if (str[0] == "/summary")
-                                        {
-                                            string s = str[1];
-                                            Order[] allOrders = (await this.wmAPI.GetOrdersAsync(s)).payload.orders;
+                                        string s = str[1];
+                                        Order[] allOrders = (await this.wmAPI.GetOrdersAsync(s)).payload.orders;
 
-                                            var result = allOrders                                                        
-                                                        .Where(order => order.OrderType == "sell" && order.User.Status == "ingame")
-                                                        .OrderBy(order => order.Platinum)
-                                                        .Take(5)
-                                                        .Select(obj => obj.Platinum)
-                                                        .ToList();
+                                        var result = allOrders                                                        
+                                                    .Where(order => order.OrderType == "sell" && order.User.Status == "ingame")
+                                                    .OrderBy(order => order.Platinum)
+                                                    .Take(5)
+                                                    .Select(obj => obj.Platinum)
+                                                    .ToList();
 
-                                            await botClient.SendTextMessageAsync(
-                                                chat.Id,
-                                                JsonSerializer.Serialize((result)));
-
-                                            return;
-                                        }
+                                        await botClient.SendTextMessageAsync(
+                                            chat.Id,
+                                            JsonSerializer.Serialize((result)));
 
                                         return;
                                     }
+
+                                    if (str[0] =="/track" )
+                                    {
+                                        string s = str[1];
+                                        using (IServiceScope scope = serviceScopeFactory.CreateScope())
+                                        {
+                                            WarframeMarketContext warframeMarketContext =
+                                                scope.ServiceProvider.GetRequiredService<WarframeMarketContext>();
+                                            Console.WriteLine("Scope is created!");
+
+                                            var alert = new Alert
+                                            {
+                                                TgId = user.Id,
+                                                Cost = int.Parse(str[2]),
+                                                ItemId = await warframeMarketContext.Items.Where(t => t.UrlName == s).Select(t => t.Id).FirstAsync(cancellationToken)
+                                            };
+                                            await warframeMarketContext.Alerts.AddAsync(alert, cancellationToken);
+                                            await warframeMarketContext.SaveChangesAsync(cancellationToken);
+                                        }
+                                    }
+
+                                    
+
+                                    return;
+                                }
                             }
 
 

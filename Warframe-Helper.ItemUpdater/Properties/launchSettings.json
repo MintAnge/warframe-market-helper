@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Warframe-Helper.ItemUpdater": {
+      "commandName": "Project",
+      "commandLineArgs": "--environment Development"
+    }
+  }
+}
