@@ -8,6 +8,7 @@ using MintAnge.WarframeMarketApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
+using Item = Warframe_Helper.Data.Models.Item;
 
 
 internal class UpdateItems
@@ -15,8 +16,6 @@ internal class UpdateItems
     private static async Task Main(string[] args)
     {
         HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
-
-
         PostgresConfiguration cO = builder.Configuration.GetRequiredSection("PostgresConfig").Get<PostgresConfiguration>();
         builder.Build();
 
@@ -24,22 +23,45 @@ internal class UpdateItems
             .UseNpgsql(cO.GetConnectionString())
             .Options;
 
-        WarframeMarketContext warframeMarketContext = new WarframeMarketContext(contextOptions);
-
-        WarframeMarketAPI warframeMarketApi = new WarframeMarketAPI();
+        WarframeMarketContext warframeMarketContext = new(contextOptions);
+        WarframeMarketAPI warframeMarketApi = new();
 
         ItemShort[] items = (await warframeMarketApi.GetAllItemsAsync()).payload.items;
-
-        await warframeMarketContext.ItemMonitorings.ExecuteDeleteAsync();
-        await warframeMarketContext.Items.ExecuteDeleteAsync();
+        Dictionary<string, string> UrlNames = warframeMarketContext.Items.Select(t => t.UrlName).ToDictionary(t => t);
+        List<int> ItemsId = warframeMarketContext.Items.Select(t => t.Id).ToList();
+        Dictionary<int, int> IdOrders = warframeMarketContext.ItemMonitorings.Select(t => t.ItemId).ToDictionary(t => t);
 
         for (int i =0; i<items.Length; i++)
-        {
-            Warframe_Helper.Data.Models.Item item = new Warframe_Helper.Data.Models.Item{
+        {   
+            if (!UrlNames.ContainsKey(items[i].UrlName))
+            {
+                Item item = new()
+                {
                     UrlName = items[i].UrlName,
-                    Description =""
-            };
-            await warframeMarketContext.Items.AddAsync(item);           
+                    Description = "",
+                    ItemMonitoring = new()
+                    {
+                        BuyCost = 0,
+                        SellCost = 0
+                    }
+
+                };
+                await warframeMarketContext.Items.AddAsync(item);
+            }
+        }
+
+        for (int i = 0; i < ItemsId.Count; i++)
+        {
+            if (!IdOrders.ContainsKey(ItemsId[i]))
+            {
+                ItemMonitoring itemMonitoring = new()
+                { 
+                        ItemId = ItemsId[i],
+                        BuyCost = 0,
+                        SellCost = 0
+                };
+                await warframeMarketContext.ItemMonitorings.AddAsync(itemMonitoring);
+            }
         }
 
         await warframeMarketContext.SaveChangesAsync();
