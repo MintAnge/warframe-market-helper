@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Warframe_Helper.Data.Models;
+namespace MintAnge.WarframeHelper.Data.Models;
 
 public partial class Item
 {

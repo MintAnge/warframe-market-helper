@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Warframe_Helper.Data.Models;
+using MintAnge.WarframeHelper.Data.Models;
 
-namespace Warframe_Helper.Data;
+namespace MintAnge.WarframeHelper.Data;
 
 public partial class WarframeMarketContext : DbContext
 {

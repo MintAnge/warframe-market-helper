@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warframe-Helper.Bot", "Warframe-Helper\Warframe-Helper.Bot.csproj", "{FC768B7D-B24B-4C2F-B28F-056752671B3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarframeHelper.Bot", "WarframeHelper.Bot\WarframeHelper.Bot.csproj", "{FC768B7D-B24B-4C2F-B28F-056752671B3E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Warframe-market-API", "Warframe-market-API\Warframe-market-API.csproj", "{A2C0677F-609C-4DB3-8746-516D8EE623CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarframeMarketAPI", "WarframeMarketAPI\WarframeMarketAPI.csproj", "{A2C0677F-609C-4DB3-8746-516D8EE623CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warframe-Helper.Data", "Warframe-Helper.Data\Warframe-Helper.Data.csproj", "{6BD4636C-46CB-4ACA-A796-59684BC7FFB5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarframeHelper.Data", "WarframeHelper.Data\WarframeHelper.Data.csproj", "{6BD4636C-46CB-4ACA-A796-59684BC7FFB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warframe-Helper.ItemUpdater", "Warframe-Helper.ItemUpdater\Warframe-Helper.ItemUpdater.csproj", "{A7F6D8B0-70FF-4BD1-9AEA-A59B3A8CB080}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarframeHelper.ItemUpdater", "WarframeHelper.ItemUpdater\WarframeHelper.ItemUpdater.csproj", "{A7F6D8B0-70FF-4BD1-9AEA-A59B3A8CB080}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

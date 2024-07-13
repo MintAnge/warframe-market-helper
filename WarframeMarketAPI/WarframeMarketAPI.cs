@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using MintAnge.WarframeMarketApi.Models;
+using MintAnge.WarframeMarketAPI.Models;
  
-namespace MintAnge.WarframeMarketApi
+namespace MintAnge.WarframeMarketAPI
 {
     public class WarframeMarketAPI
     {

@@ -1,4 +1,4 @@
-﻿namespace MintAnge.WarframeMarketApi.Models;
+﻿namespace MintAnge.WarframeMarketAPI.Models;
 
 public class User
 {

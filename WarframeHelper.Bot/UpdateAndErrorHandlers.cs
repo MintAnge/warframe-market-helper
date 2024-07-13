@@ -2,25 +2,25 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using Telegram.Bot;
-using MintAnge.WarframeMarketApi;
-using MintAnge.WarframeMarketApi.Models;
+using MintAnge.WarframeMarketAPI;
+using MintAnge.WarframeMarketAPI.Models;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using Warframe_Helper;
+using WarframeHelper;
 using Microsoft.EntityFrameworkCore;
-using Warframe_Helper.Data;
-using Warframe_Helper.Data.Models;
+using WarframeHelper.Data.Models;
+using MintAnge.WarframeHelper.Data;
 
-namespace MintAnge.WarframeMarketHelper
+namespace MintAnge.WarframeMarketHelper.Bot
 {
     public class UpdErrHandlers
     {
-        private readonly WarframeMarketAPI wmAPI;
+        private readonly WarframeMarketAPI.WarframeMarketAPI wmAPI;
         private readonly ILogger<UpdErrHandlers> logger;
         private readonly IServiceScopeFactory serviceScopeFactory;
 
-        public UpdErrHandlers(WarframeMarketAPI wmAPI, ILogger<UpdErrHandlers> logger, IServiceScopeFactory serviceScopeFactory)
+        public UpdErrHandlers(WarframeMarketAPI.WarframeMarketAPI wmAPI, ILogger<UpdErrHandlers> logger, IServiceScopeFactory serviceScopeFactory)
         {
             this.wmAPI = wmAPI;
             this.logger = logger;
