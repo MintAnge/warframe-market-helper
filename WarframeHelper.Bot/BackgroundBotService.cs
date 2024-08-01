@@ -6,45 +6,49 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot;
 
-public class BackgroundBotService : BackgroundService
+namespace MintAnge.WarframeMarketHelper.Bot
 {
-    private readonly ILogger<BackgroundBotService> _logger;
-    private readonly TelegramBotClient _botClient;
-    private readonly UpdErrHandlers _updErrHandlers;
-
-    public BackgroundBotService(TelegramBotClient botClient, ILogger<BackgroundBotService> logger, UpdErrHandlers updErrHandlers)
+    public class BackgroundBotService : BackgroundService
     {
-        _botClient = botClient;
-        _logger = logger;
-        _updErrHandlers = updErrHandlers;
-    }
+        private readonly ILogger<BackgroundBotService> _logger;
+        private readonly TelegramBotClient _botClient;
+        private readonly UpdErrHandlers _updErrHandlers;
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        //_botClient = new TelegramBotClient(File.ReadAllText("C:\\Users\\AngeMaks\\source\\repos\\MintAnge\\warframe-market-helper\\bot_token.txt"));
-
-
-        var _receiverOptions = new ReceiverOptions
+        public BackgroundBotService(TelegramBotClient botClient, ILogger<BackgroundBotService> logger, UpdErrHandlers updErrHandlers)
         {
-            AllowedUpdates = new[]
+            _botClient = botClient;
+            _logger = logger;
+            _updErrHandlers = updErrHandlers;
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            //_botClient = new TelegramBotClient(File.ReadAllText("C:\\Users\\AngeMaks\\source\\repos\\MintAnge\\warframe-market-helper\\bot_token.txt"));
+
+
+            var _receiverOptions = new ReceiverOptions
             {
-                UpdateType.Message,
-            },
+                AllowedUpdates = new[]
+                {
+                    UpdateType.Message,
+                },
 
-            ThrowPendingUpdates = true,
-        };
-
-
-        var me = await _botClient.GetMeAsync(stoppingToken);
-        _logger.LogInformation("{имя} запущен!", me.FirstName);
+                ThrowPendingUpdates = true,
+            };
 
 
-        await _botClient.ReceiveAsync(
-            _updErrHandlers.UpdateHandler,
-            _updErrHandlers.ErrorHandler,
-            _receiverOptions,
-            stoppingToken);
-        _logger.LogInformation("ALL DONE MATE!");
+            var me = await _botClient.GetMeAsync(stoppingToken);
+            _logger.LogInformation("{имя} запущен!", me.FirstName);
+
+
+            await _botClient.ReceiveAsync(
+                _updErrHandlers.UpdateHandler,
+                _updErrHandlers.ErrorHandler,
+                _receiverOptions,
+                stoppingToken);
+            _logger.LogInformation("ALL DONE MATE!");
+        }
+
     }
-
 }
+

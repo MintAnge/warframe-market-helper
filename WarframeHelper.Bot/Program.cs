@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using MintAnge.WarframeMarketAPI;
 using Microsoft.Extensions.Logging;
-using WarframeHelper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MintAnge.WarframeHelper.Data;
@@ -29,7 +28,7 @@ internal class Program
         Console.WriteLine(builder.Configuration.AsEnumerable().ToList());
 
         builder.Services.AddSingleton(new TelegramBotClient(builder.Configuration["BotToken"]));
-        builder.Services.AddSingleton<WarframeMarketAPI>();
+        builder.Services.AddSingleton<WarframeMarketAPI.WarframeMarketAPI>();
         builder.Services.AddSingleton<UpdErrHandlers>();
         builder.Services.AddDbContext<WarframeMarketContext>(
                 options => options.UseNpgsql(postgresConf.GetConnectionString())

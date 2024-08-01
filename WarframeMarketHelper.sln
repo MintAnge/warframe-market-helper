@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarframeHelper.Bot", "Warfr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarframeMarketAPI", "WarframeMarketAPI\WarframeMarketAPI.csproj", "{A2C0677F-609C-4DB3-8746-516D8EE623CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarframeHelper.Data", "WarframeHelper.Data\WarframeHelper.Data.csproj", "{6BD4636C-46CB-4ACA-A796-59684BC7FFB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarframeHelper.Data", "WarframeHelper.Data\WarframeHelper.Data.csproj", "{6BD4636C-46CB-4ACA-A796-59684BC7FFB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarframeHelper.ItemUpdater", "WarframeHelper.ItemUpdater\WarframeHelper.ItemUpdater.csproj", "{A7F6D8B0-70FF-4BD1-9AEA-A59B3A8CB080}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarframeHelper.ItemUpdater", "WarframeHelper.ItemUpdater\WarframeHelper.ItemUpdater.csproj", "{A7F6D8B0-70FF-4BD1-9AEA-A59B3A8CB080}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarframeHelper.ItemMonitoring", "WarframeHelper.ItemMonitoring\WarframeHelper.ItemMonitoring.csproj", "{FD2BEC1B-FE3F-4320-86DF-7227CB6A6BA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{A7F6D8B0-70FF-4BD1-9AEA-A59B3A8CB080}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7F6D8B0-70FF-4BD1-9AEA-A59B3A8CB080}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7F6D8B0-70FF-4BD1-9AEA-A59B3A8CB080}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD2BEC1B-FE3F-4320-86DF-7227CB6A6BA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD2BEC1B-FE3F-4320-86DF-7227CB6A6BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD2BEC1B-FE3F-4320-86DF-7227CB6A6BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD2BEC1B-FE3F-4320-86DF-7227CB6A6BA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

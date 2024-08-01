@@ -15,11 +15,11 @@ internal class UpdateItems
     private static async Task Main(string[] args)
     {
         HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
-        PostgresConfiguration cO = builder.Configuration.GetRequiredSection("PostgresConfig").Get<PostgresConfiguration>();
+        PostgresConfiguration postgresConf = builder.Configuration.GetRequiredSection("PostgresConfig").Get<PostgresConfiguration>();
         builder.Build();
 
         var contextOptions = new DbContextOptionsBuilder<WarframeMarketContext>()
-            .UseNpgsql(cO.GetConnectionString())
+            .UseNpgsql(postgresConf.GetConnectionString())
             .Options;
 
         WarframeMarketContext warframeMarketContext = new(contextOptions);

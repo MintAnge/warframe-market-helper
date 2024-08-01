@@ -7,9 +7,9 @@ using MintAnge.WarframeMarketAPI.Models;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using WarframeHelper;
+using MintAnge.WarframeHelper;
 using Microsoft.EntityFrameworkCore;
-using WarframeHelper.Data.Models;
+using MintAnge.WarframeHelper.Data.Models;
 using MintAnge.WarframeHelper.Data;
 
 namespace MintAnge.WarframeMarketHelper.Bot

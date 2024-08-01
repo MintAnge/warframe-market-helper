@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>Warframe_Helper.ItemUpdater</RootNamespace>
+    <RootNamespace>MintAnge.WarframeHelper.ItemUpdater</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UserSecretsId>06f0ddb2-2603-4a14-99f1-be6bffac0a44</UserSecretsId>
