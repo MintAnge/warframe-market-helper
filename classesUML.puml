@@ -1,0 +1,164 @@
+@startuml
+class Alert {
+    +Id: Int
+    +tgId: Long
+    +itemId: Int
+    +cost: Int
+    +Item: Item
+}
+
+class ItemMonitoring {
+    +ItemId: Int
+    +BuyCost: Int
+    +SellCost: Int
+    +Item: Item
+}
+
+class ItemM {
+    +Id: Int
+    +UrlName: String
+    +Description: String
+    +Alerts: ICollection<Alert>
+    +ItemMonitoring: ItemMonitoring?
+}
+
+class WarframeMarketContext{
+    +Alerts: DbSet<Alert>
+    +Items: DbSet<Item>
+    +ItemMonitorings: DbSet<ItemMonitoring>
+    #OnModelCreating(ModelBuilder modelBuilder)
+}
+
+class PostgresConfiguration {
++Host: String
++Port: String
++Database: String
++Username: String
++Password: String
++GetConnectionString()
+}
+
+class BackgroundItemMonitoringService {
+    - _logger: ILogger<BackgroundItemMonitoringService>
+    - _botClient: TelegramBotClient
+    - _warframeMarketAPI: WarframeMarketAPI.WarframeMarketAPI
+    - serviceScopeFactory:IServiceScopeFactory
+    # ExecuteAsync(CancellationToken stoppingToken) : Task
+    + CheckPrice(): Task
+}
+
+class WarframeMarketAPI {
+    + sharedClient : HttpClient
+    + GetOrdersAsync(string s): Task<OrdersResponse>
+    + GetAllItemsAsync(): Task<AllItemsResponse>
+    + GetItemAsync(string s): Task<ItemResponse>
+    + ExecuteRequest<T>(string s): Task<T>
+}
+
+class AllItemsResponse {
+    + payload: Payload
+}
+
+class AllItemsResponsePayload {
+    +items: ItemShort[]
+}
+
+class ItemShort {
+    + Id: String
+    + Thumb: String
+    + ItemName: String
+    + UrlName: String
+    + Vaulted: Bool
+}
+
+class OrdersResponse {
+    + payload: Payload
+}
+
+class OrdersResponsePayload {
+    + orders: Order[]
+}
+
+class Order {
+    + OrderType: String
+    + Quantity: Int
+    + Platinum: Int
+    + User: User
+    + Platform: String
+    + CreationDate: DateTime
+    + LastUpdate: DateTime
+    + Visible: Bool
+    + Id: String
+    + ModRank: Int
+    + Region: String
+}
+
+class User {
+    +Reputation : String
+    +Locale :String
+    +Avatar:String
+    +LastSeen: DateTime
+    +IngameName:String
+    +Id:String
+    +Region:String
+    +Status:String
+}
+
+class ItemResponse {
+    + payload: Payload
+}
+
+class ItemResponsePayload {
+    +item : Item
+}
+
+class Item {
+    +Id: String
+    + ItemsInSet: ItemFull[]
+}
+
+class ItemFull {
+
+}
+
+class WarframeMarketHelperBot {
+    + Main() : Void
+}
+
+class BackgroundBotService {
+    - _logger: ILogger<BackgroundBotService>
+    - _botClient: TelegramBotClient
+    - _updErrHandlers: UpdErrHandlers
+    # ExecuteAsync(CancellationToken stoppingToken) : Task
+}
+
+class UpdErrHandlers {
+    - wmAPI: WarframeMarketAPI
+    - logger: ILogger<UpdErrHandlers>
+    - serviceScopeFactory: IServiceScopeFactory
+    + UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken): Task
+    + ErrorHandler(ITelegramBotClient botClient, Exception error, CancellationToken cancellationToken): Task
+}
+
+WarframeMarketContext "1" -- "many" Alert : has
+WarframeMarketContext "1" -- "many" ItemMonitoring : has
+WarframeMarketContext "1" -- "many" ItemM : has
+ItemM "1" -- "many" Alert : has
+ItemM "1" -- "many" ItemMonitoring : has
+ItemMonitoring "1" -- "1" ItemM : has
+Alert "1" -- "1" ItemM : has
+AllItemsResponse  "1" -- "1" AllItemsResponsePayload : has
+AllItemsResponsePayload "1" -- "many" ItemShort : has
+OrdersResponse "1" -- "1" OrdersResponsePayload : has
+OrdersResponsePayload "1" -- "many" Order : has
+Order "1" -- "1" User : has
+WarframeMarketAPI "1" -- "1" OrdersResponse : uses
+WarframeMarketAPI "1" -- "1" AllItemsResponse : uses
+WarframeMarketAPI "1" -- "1" ItemResponse : uses
+ItemResponse "1" -- "1" ItemResponsePayload : has
+ItemResponsePayload "1" -- "1" Item : has
+Item  "1" -- "1" ItemFull : has
+BackgroundBotService "1" -- "1" UpdErrHandlers : uses
+WarframeMarketHelperBot "1" -- "1" BackgroundBotService : uses
+UpdErrHandlers "1" -- "1" WarframeMarketAPI: has
+@enduml
