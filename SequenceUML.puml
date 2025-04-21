@@ -1,0 +1,15 @@
+@startuml
+actor       User       as Foo
+participant Bot as Foo1
+participant ItemMonitoring as Foo2
+
+Foo -> Foo1 : Open bot
+Foo2 -> Foo2 : Check prices
+Foo1 -> Foo: Notification
+Foo2 -> Foo1: Item reached needed cost
+Foo -> Foo2 : Update item
+Foo -> Foo2 : Add item
+Foo -> Foo2 : Delete item
+
+
+@enduml
